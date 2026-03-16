@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Data & models
+dataset/
+runs/
+models/
+
+# Logs
+logs/
+
+# OS files
+.DS_Store
+
