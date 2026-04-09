@@ -34,10 +34,10 @@ def create_dataset_yaml(dataset_dir: str, output_path: str) -> str:
     images_val = os.path.join(dataset_dir, "images", "val")
 
     data = {
-        "path": dataset_dir,
-        "train": images_train,
-        "val": images_val,
-        "names": [],  # can be populated if class names are known
+        "path": os.path.abspath(dataset_dir),
+        "train": "images/train",
+        "val": "images/val",
+        "names": {0: "product"},
     }
 
     output_dir = os.path.dirname(output_path)
@@ -81,7 +81,9 @@ def train_yolo_model(
         model = YOLO(training_config.model)
     except Exception as exc:
         logger.exception("Failed to load YOLO model '%s'.", training_config.model)
-        raise RuntimeError(f"Unable to load YOLO model '{training_config.model}'") from exc
+        raise RuntimeError(
+            f"Unable to load YOLO model '{training_config.model}'"
+        ) from exc
 
     try:
         results = model.train(
@@ -134,4 +136,3 @@ def _infer_best_model_from_results(results: Any) -> str:
         logger.debug("Unable to infer best model path from results.", exc_info=True)
 
     return ""
-
