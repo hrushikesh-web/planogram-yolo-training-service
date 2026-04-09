@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PYTHONPATH="${PYTHONPATH:-$(pwd)}"
+
 echo "Downloading dataset from GCS..."
 python scripts/download_dataset.py
 

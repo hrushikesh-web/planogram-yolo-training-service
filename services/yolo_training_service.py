@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Any, Dict
 
@@ -91,8 +92,8 @@ def train_yolo_model(
             epochs=training_config.epochs,
             imgsz=training_config.imgsz,
             batch=training_config.batch,
-            project="runs",
-            name="detect/train",
+            project="runs/detect",
+            name="train",
         )
     except Exception as exc:
         logger.exception("YOLO training failed.")
@@ -125,8 +126,13 @@ def _infer_best_model_from_results(results: Any) -> str:
     This is defensive in case defaults change in future versions.
     """
     try:
+        result0 = None
         if isinstance(results, list) and results:
             result0 = results[0]
+        elif results is not None:
+            result0 = results
+
+        if result0 is not None:
             save_dir = getattr(result0, "save_dir", None)
             if save_dir:
                 candidate = os.path.join(str(save_dir), "weights", "best.pt")
@@ -134,5 +140,14 @@ def _infer_best_model_from_results(results: Any) -> str:
                     return candidate
     except Exception:
         logger.debug("Unable to infer best model path from results.", exc_info=True)
+
+    # Defensive fallback: pick the newest best.pt under runs/detect.
+    try:
+        candidates = list(Path("runs/detect").glob("**/weights/best.pt"))
+        if candidates:
+            newest = max(candidates, key=lambda p: p.stat().st_mtime)
+            return str(newest)
+    except Exception:
+        logger.debug("Unable to infer best model path from filesystem.", exc_info=True)
 
     return ""
