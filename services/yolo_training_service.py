@@ -40,7 +40,9 @@ def create_dataset_yaml(dataset_dir: str, output_path: str) -> str:
         "names": [],  # can be populated if class names are known
     }
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    output_dir = os.path.dirname(output_path)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
 
     with open(output_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(data, f)
