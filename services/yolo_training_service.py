@@ -9,6 +9,12 @@ from ultralytics import YOLO
 
 logger = logging.getLogger(__name__)
 
+# YOLO class index -> name (must match annotation labels in dataset).
+YOLO_CLASS_NAMES: Dict[int, str] = {
+    0: "product",
+    1: "tag",
+}
+
 
 @dataclass
 class TrainingConfig:
@@ -38,7 +44,8 @@ def create_dataset_yaml(dataset_dir: str, output_path: str) -> str:
         "path": os.path.abspath(dataset_dir),
         "train": "images/train",
         "val": "images/val",
-        "names": {0: "product"},
+        "nc": len(YOLO_CLASS_NAMES),
+        "names": dict(YOLO_CLASS_NAMES),
     }
 
     output_dir = os.path.dirname(output_path)

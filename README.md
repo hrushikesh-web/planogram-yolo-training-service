@@ -1,6 +1,6 @@
 ## Planogram YOLO Training Service
 
-This repository provides a **production-ready training pipeline** for Ultralytics YOLOv8 to detect shelf products.  
+This repository provides a **production-ready training pipeline** for Ultralytics YOLOv8 to detect shelf **products** and price **tags**.  
 It is designed to run on a GPU-enabled VM and integrates with **Google Cloud Storage (GCS)** for dataset input and trained model output.
 
 After cloning the repo and installing dependencies, you can run the end-to-end pipeline with:
@@ -94,7 +94,18 @@ gs://<dataset_bucket>/datasets/<dataset_version>/
       └── val/
 ```
 
-Each `labels/*.txt` file should follow standard YOLO format.
+Each `labels/*.txt` file should follow standard YOLO format:
+
+```text
+<class_id> <x_center> <y_center> <width> <height>
+```
+
+Class IDs (normalized 0–1 coordinates):
+
+| Class ID | Name     |
+|----------|----------|
+| 0        | product  |
+| 1        | tag      |
 
 When you run the pipeline, the dataset is downloaded locally into the `dataset/` directory with the same structure:
 
